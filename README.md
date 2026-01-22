@@ -1,6 +1,3 @@
-# chatbot-telegram
-Bot de Telegram para consulta de clima via n8n
-
 # Chatbot de Clima - Telegram & n8n
 
 Este projeto é um chatbot automatizado via n8n que fornece a temperatura atual de qualquer cidade enviada pelo Telegram.
