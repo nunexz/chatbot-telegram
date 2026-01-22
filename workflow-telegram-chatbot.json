@@ -67,7 +67,7 @@
             },
             {
               "name": "appid",
-              "value": "=e6d2c77d08bf0353bf15da993a08c547"
+              "value": "=OPENWEATHER_API_KEY"
             }
           ]
         },
@@ -80,7 +80,8 @@
         0
       ],
       "id": "ef7429c5-3ae8-4b34-9b5b-5ffd9a5ab1ad",
-      "name": "HTTP Request"
+      "name": "HTTP Request",
+      "onError": "continueRegularOutput"
     },
     {
       "parameters": {
@@ -141,7 +142,7 @@
     {
       "parameters": {
         "chatId": "={{ $node[\"Telegram Trigger\"].json.message.chat.id }}",
-        "text": "❌ Cidade não encontrada. Use o formato Cidade,UF (ex.: São Paulo,SP).",
+        "text": "❌ Cidade não encontrada. Use o formato Cidade,UF (ex.: São Paulo, SP).",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
@@ -282,7 +283,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "56584e6b-bb95-4a13-a7a2-4947af93ce76",
+  "versionId": "3e0add35-951e-49ca-9e33-53e1513f4a37",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "b0161a6ec6a8ca0d4ab50a93b18c080cfa12cfaeb163ac6d4a0142f1d3f020e9"
