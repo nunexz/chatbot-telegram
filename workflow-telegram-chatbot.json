@@ -1,0 +1,292 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "feb1f43b-d4b7-4bcc-b2a2-9d800c6627f9",
+      "name": "Telegram Trigger",
+      "webhookId": "d40e9b49-42c7-4849-b10e-805e7cdb9389",
+      "credentials": {
+        "telegramApi": {
+          "id": "7Wp6LiJFCtYsC22L",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0a15567c-57bf-4dd2-a1f9-0d365fc41e2d",
+              "name": "queue",
+              "value": "={{ $json.message.text.split(',')[0].trim().toLowerCase().normalize(\"NFD\").replace(/[\\u0300-\\u036f]/g, \"\") }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6a71bd1c-e741-46ea-9279-707fde710602",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{$json.queue}}"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            },
+            {
+              "name": "lang",
+              "value": "pt_br"
+            },
+            {
+              "name": "appid",
+              "value": "=e6d2c77d08bf0353bf15da993a08c547"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "ef7429c5-3ae8-4b34-9b5b-5ffd9a5ab1ad",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4dc6c059-16f9-4245-959b-f651d5636835",
+              "name": "mensagem_final",
+              "value": "=🌤️ A temperatura em {{ $json.name }} é de {{ Math.round($json.main.temp) }}°C.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        -192
+      ],
+      "id": "e1546b5e-4fea-469f-9253-d1acb8a0d10c",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "24044330-0340-428d-99ad-29687aefc14c",
+              "leftValue": "={{ $json.cod }}",
+              "rightValue": 200,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "f02b1454-c229-4421-8761-90567f1f3ed4",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json.message.chat.id }}",
+        "text": "❌ Cidade não encontrada. Use o formato Cidade,UF (ex.: São Paulo,SP).",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        192
+      ],
+      "id": "9683fbe1-4de0-4561-b818-4339dbeae6aa",
+      "name": "Send a text message",
+      "webhookId": "a70176c7-e4eb-43a9-8e86-9fc4afd0e071",
+      "credentials": {
+        "telegramApi": {
+          "id": "7Wp6LiJFCtYsC22L",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Telegram Trigger\"].json.message.chat.id }}",
+        "text": "={{ $json.mensagem_final }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1056,
+        -191.54253519661444
+      ],
+      "id": "2bf97bbb-ea1b-4391-8528-56bd69fc6cef",
+      "name": "Send a text message1",
+      "webhookId": "f7ffca12-6c8b-4fcb-8b0d-cf1425b3eea7",
+      "credentials": {
+        "telegramApi": {
+          "id": "7Wp6LiJFCtYsC22L",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 516305814,
+          "message": {
+            "message_id": 6,
+            "from": {
+              "id": 687246667,
+              "is_bot": false,
+              "first_name": "M",
+              "last_name": "M",
+              "language_code": "pt-br"
+            },
+            "chat": {
+              "id": 687246667,
+              "first_name": "M",
+              "last_name": "M",
+              "type": "private"
+            },
+            "date": 1769121655,
+            "text": "Curitiba, PR"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "56584e6b-bb95-4a13-a7a2-4947af93ce76",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b0161a6ec6a8ca0d4ab50a93b18c080cfa12cfaeb163ac6d4a0142f1d3f020e9"
+  },
+  "id": "Y9wlfl0TwvqhLtCw19D_u",
+  "tags": []
+}
